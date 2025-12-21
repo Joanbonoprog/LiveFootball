@@ -17,10 +17,10 @@ A comprehensive Android application for live football match tracking and team ma
 
 The LiveFootball application was developed by:
 
-- **Carlos** - Development
-- **Andrei** - Development
-- **Joan** - Development
-- **Antonio** - Development
+- **Carlos Gonzalez** - FrontEnd
+- **Andrei Raileanu** - Backend & Documentation
+- **Joan Bono** - BackEnd & Databases
+- **Antonio Amador** - FrontEnd & Tester
 
 ---
 
