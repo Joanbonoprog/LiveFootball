@@ -129,12 +129,6 @@ The platform serves as a one-stop solution for football enthusiasts seeking accu
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js v16+ (Backend)
-- npm or yarn (Package Manager)
-- Docker (Optional, for containerized development)
-- PostgreSQL 12+ (Database)
-
 ### Installation
 
 1. **Clone the Repository**
