@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import ifp.project.livefootball.Account.LogInActivity;
+import ifp.project.livefootball.Chatbot.ChatbotActivity;
 import ifp.project.livefootball.Match.MatchOnLineActivity;
 import ifp.project.livefootball.Player.EditPlayerActivity;
 import ifp.project.livefootball.Player.CreatePlayerActivity;
@@ -38,6 +39,7 @@ public class MainMenuActivity extends AppCompatActivity {
     private Button botonLogOut;
     private TextView caja1;
     private Intent pasarPantalla;
+    private Button botonChatbot;
     private String userType;
     private Database db;
 
@@ -49,6 +51,7 @@ public class MainMenuActivity extends AppCompatActivity {
         initViews();
         setupButtons();
     }
+
 
     private void initViews() {
         botonCrearPartido = findViewById(R.id.botonMainCrearPartido);
@@ -62,6 +65,7 @@ public class MainMenuActivity extends AppCompatActivity {
         botonMostrarJugadores = findViewById(R.id.botonMainMostrarJugadores);
         botonLogOut = findViewById(R.id.boton2_menu);
         caja1 = findViewById(R.id.label3_menu);
+        botonChatbot = findViewById(R.id.botonMainChatbot);
         db = new Database(this);
 
         // Obtén el nombre de usuario de las preferencias compartidas
@@ -98,6 +102,7 @@ public class MainMenuActivity extends AppCompatActivity {
         botonCrearPartido.setEnabled(true);
         botonCrearEquipo.setEnabled(true);
         botonCrearJugador.setEnabled(true);
+        botonChatbot.setEnabled(true);
 
         botonEditarPartido.setEnabled(false);
         botonEditarEquipo.setEnabled(false);
@@ -112,6 +117,7 @@ public class MainMenuActivity extends AppCompatActivity {
         botonMostrarEquipo.setBackgroundColor(Color.GRAY);
         botonPartidoEnCurso.setBackgroundColor(Color.GRAY);
         botonMostrarJugadores.setBackgroundColor(Color.GRAY);
+
         botonCrearPartido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +141,15 @@ public class MainMenuActivity extends AppCompatActivity {
                 startActivity(pasarPantalla);
             }
         });
+        botonChatbot.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+                public void onClick(View v) {
+                    pasarPantalla = new Intent(MainMenuActivity.this, ChatbotActivity.class);
+                    startActivity(pasarPantalla);
+                }
+            });
+
     }
 
     private void enableButtonsForAsistente() {

@@ -78,6 +78,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
 
+    <Button
+        android:id="@+id/botonMainChatbot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="16dp"
+        android:text="Chatbot"
+        app:layout_constraintBottom_toTopOf="@+id/boton2_menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+        app:layout_constraintVertical_bias="0.865" />
+
     <LinearLayout
         android:id="@+id/linearLayout6"
         android:layout_width="match_parent"

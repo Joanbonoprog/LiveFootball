@@ -18,5 +18,7 @@
     <string name="equipo_modificar">Seleccione equipo a modificar</string>
     <string name="partido_curso">Seleccione partido</string>
     <string name="equipo_jugador">Seleccione equipo</string>
+    <string name="escribe_un_mensaje">Escribe un mensaje...</string>
+    <string name="enviar">Enviar</string>
 
 </resources>

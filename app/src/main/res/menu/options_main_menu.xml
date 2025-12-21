@@ -10,6 +10,6 @@
     <item
         android:id="@+id/Exit_options_main_menu"
         android:title="Salir"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         app:showAsAction="never" />
 </menu>
