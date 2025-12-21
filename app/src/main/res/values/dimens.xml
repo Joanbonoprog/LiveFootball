@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="message_margin">16dp</dimen>
+    <dimen name="message_padding">12dp</dimen>
+    <dimen name="chat_text_margin">8dp</dimen>
+</resources>

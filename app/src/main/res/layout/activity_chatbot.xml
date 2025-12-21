@@ -1,0 +1,55 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="@dimen/chat_text_margin"
+        app:layout_constraintBottom_toTopOf="@+id/messageLayout"
+        app:layout_constraintTop_toBottomOf="@+id/buttonBackToMenu" />
+
+    <LinearLayout
+        android:id="@+id/messageLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/chat_text_margin"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <EditText
+            android:id="@+id/messageInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Escribe un mensaje..."
+            android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:padding="@dimen/message_padding" />
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/chat_text_margin"
+            android:text="Enviar" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonBackToMenu"
+        android:layout_width="80dp"
+        android:layout_height="48dp"
+        android:layout_margin="@dimen/message_margin"
+        android:layout_marginTop="604dp"
+        android:text="Menú"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
