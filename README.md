@@ -66,33 +66,33 @@ The platform serves as a one-stop solution for football enthusiasts seeking accu
 
 ## 👥 Team Structure
 
-### Development Team
+### Development Team (Carlos Gonzalez, Antonio Amador, Andrei Raileanu, Joan Bono)
 
-#### **Backend Development**
+#### **Backend Development (Joan Bono, Andrei Raileanu)**
 - API Design & Development
 - Database Architecture
 - Real-time Data Processing
 - Third-party API Integration
 
-#### **Frontend Development**
+#### **Frontend Development (Carlos Gonzalez, Toni Amador)**
 - Web Application Development (React/Vue)
 - Mobile App Development (React Native/Flutter)
 - UI/UX Implementation
 - Responsive Design
 
-#### **Data & Analytics**
+#### **Data & Analytics (All the Team)**
 - Data Collection & Processing
 - Statistical Analysis
 - Performance Metrics
 - Data Visualization
 
-#### **DevOps & Infrastructure**
+#### **DevOps & Infrastructure (Joan Bono)**
 - Server Management & Deployment
 - CI/CD Pipeline Management
 - Database Administration
 - Security & Compliance
 
-#### **Project Management & QA**
+#### **Project Management & QA (Toni Amador)**
 - Project Coordination
 - Quality Assurance & Testing
 - User Testing & Feedback
