@@ -1,273 +1,88 @@
-# LiveFootball ⚽
+# LiveFootball
 
-A comprehensive real-time football (soccer) information and statistics platform designed to deliver live match updates, player statistics, team analysis, and engaging content for football enthusiasts worldwide.
+A Java Android application for live football updates and information.
 
-## 📋 Table of Contents
+## Overview
 
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Team Structure](#team-structure)
-- [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
+LiveFootball is a mobile application that provides users with real-time football/soccer match information, scores, and statistics on Android devices.
 
-## 🎯 Project Overview
+## Technology Stack
 
-LiveFootball is a modern web and mobile application that provides football fans with:
-- **Real-time Match Updates**: Live scores, commentary, and match statistics
-- **Player & Team Analytics**: Comprehensive performance metrics and historical data
-- **League Information**: Current standings, fixtures, and results
-- **User Engagement**: Personalized content, notifications, and community features
+- **Language**: Java
+- **Platform**: Android
+- **Database**: SQLite
+- **Build System**: Gradle
+- **Minimum API Level**: Android 5.0 (API level 21)
 
-The platform serves as a one-stop solution for football enthusiasts seeking accurate, timely, and detailed information about their favorite teams and players.
+## Features
 
-## ✨ Features
+- Live football match updates
+- Real-time score tracking
+- Match statistics and information
+- Local data persistence with SQLite
+- Offline access to cached data
 
-### Core Features
-
-#### 1. **Live Match Tracking**
-- Real-time score updates with automatic refresh
-- Live commentary and match events (goals, cards, substitutions)
-- Heat maps and possession statistics
-- Team lineup and formation visualization
-
-#### 2. **Comprehensive Statistics**
-- Player performance metrics (passes, tackles, shots, etc.)
-- Team statistics and historical comparisons
-- Season-long player rankings
-- Advanced analytics and insights
-
-#### 3. **League Management**
-- Current standings and point tables
-- Fixture schedules and results
-- Head-to-head comparisons
-- Historical records and records tracking
-
-#### 4. **User Features**
-- Personalized dashboards with favorite teams/players
-- Push notifications for live matches and updates
-- User preferences and notification settings
-- Account management and authentication
-
-#### 5. **Content & Community**
-- Match highlights and video clips
-- Player profiles and career statistics
-- Team news and updates
-- Community forums and discussions
-
-### Additional Features
-- Search functionality for teams, players, and matches
-- Mobile-responsive design
-- Dark/Light theme support
-- Multi-language support
-- Offline mode with cached data
-
-## 👥 Team Structure
-
-### Development Team (Carlos Gonzalez, Antonio Amador, Andrei Raileanu, Joan Bono)
-
-#### **Backend Development (Joan Bono, Andrei Raileanu)**
-- API Design & Development
-- Database Architecture
-- Real-time Data Processing
-- Third-party API Integration
-
-#### **Frontend Development (Carlos Gonzalez, Toni Amador)**
-- Web Application Development (React/Vue)
-- Mobile App Development (React Native/Flutter)
-- UI/UX Implementation
-- Responsive Design
-
-#### **Data & Analytics (All the Team)**
-- Data Collection & Processing
-- Statistical Analysis
-- Performance Metrics
-- Data Visualization
-
-#### **DevOps & Infrastructure (Joan Bono)**
-- Server Management & Deployment
-- CI/CD Pipeline Management
-- Database Administration
-- Security & Compliance
-
-#### **Project Management & QA (Toni Amador)**
-- Project Coordination
-- Quality Assurance & Testing
-- User Testing & Feedback
-- Documentation
-
-## 🛠️ Technology Stack
-
-### Backend
-- **Framework**: Node.js/Express.js or Python/Django
-- **Database**: PostgreSQL / MongoDB
-- **Real-time**: WebSockets / Socket.io
-- **Cache**: Redis
-- **API**: RESTful API / GraphQL
-
-### Frontend
-- **Web**: React.js / Vue.js
-- **Mobile**: React Native / Flutter
-- **State Management**: Redux / Vuex
-- **UI Framework**: Material-UI / Bootstrap
-- **Styling**: Tailwind CSS / SCSS
-
-### Infrastructure
-- **Cloud Platform**: AWS / Google Cloud / Azure
-- **Containerization**: Docker
-- **Orchestration**: Kubernetes
-- **CI/CD**: GitHub Actions / Jenkins
-- **Monitoring**: ELK Stack / New Relic
-
-### External Services
-- **Data Source**: Sports API (ESPN, StatsBomb, etc.)
-- **Authentication**: Firebase / Auth0
-- **Analytics**: Google Analytics
-- **Payment**: Stripe (for premium features)
-
-## 🚀 Getting Started
-
-### Installation
-
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/Slenderman1314/LiveFootball.git
-   cd LiveFootball
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   # Backend
-   cd backend
-   npm install
-   
-   # Frontend
-   cd ../frontend
-   npm install
-   ```
-
-3. **Configure Environment**
-   ```bash
-   # Backend .env
-   cp backend/.env.example backend/.env
-   # Update with your configuration
-   
-   # Frontend .env
-   cp frontend/.env.example frontend/.env
-   # Update with your API endpoints
-   ```
-
-4. **Setup Database**
-   ```bash
-   cd backend
-   npm run migrate
-   npm run seed
-   ```
-
-5. **Start Development Servers**
-   ```bash
-   # Terminal 1 - Backend
-   cd backend
-   npm run dev
-   
-   # Terminal 2 - Frontend
-   cd frontend
-   npm run dev
-   ```
-
-6. **Access the Application**
-   - Web: `http://localhost:3000`
-   - API: `http://localhost:5000`
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 LiveFootball/
-├── backend/
+├── app/
 │   ├── src/
-│   │   ├── api/
-│   │   │   ├── routes/
-│   │   │   ├── controllers/
-│   │   │   └── middleware/
-│   │   ├── models/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   └── config/
-│   ├── tests/
-│   ├── .env.example
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── store/
-│   │   ├── styles/
-│   │   └── utils/
-│   ├── public/
-│   ├── tests/
-│   ├── .env.example
-│   └── package.json
-├── mobile/
-│   ├── src/
-│   ├── android/
-│   ├── ios/
-│   └── package.json
-├── docker-compose.yml
-├── README.md
-├── CONTRIBUTING.md
-└── LICENSE
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   ├── res/
+│   │   │   └── AndroidManifest.xml
+│   │   └── test/
+│   ├── build.gradle
+│   └── proguard-rules.pro
+├── build.gradle
+├── settings.gradle
+└── README.md
 ```
 
-## 🤝 Contributing
+## Getting Started
 
-We welcome contributions from the community! Please follow these steps:
+### Prerequisites
 
-1. **Fork the Repository**
-   ```bash
-   git clone https://github.com/Slenderman1314/LiveFootball.git
-   ```
+- Android Studio (latest version recommended)
+- Java Development Kit (JDK) 8 or higher
+- Android SDK with API level 21 or higher
 
-2. **Create a Feature Branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+### Building the Project
 
-3. **Commit Changes**
-   ```bash
-   git commit -m "Add descriptive commit message"
-   ```
+1. Clone the repository:
+```bash
+git clone https://github.com/Slenderman1314/LiveFootball.git
+```
 
-4. **Push to Branch**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
+2. Open the project in Android Studio
 
-5. **Open a Pull Request**
-   - Provide a clear description of changes
-   - Reference related issues
-   - Ensure tests pass
+3. Build the project using Gradle:
+```bash
+./gradlew build
+```
 
-### Code Standards
-- Follow ESLint/Prettier configuration
-- Write unit tests for new features
-- Update documentation as needed
-- Maintain consistent naming conventions
+4. Run the application on an emulator or connected device:
+```bash
+./gradlew installDebug
+```
 
-## 📝 License
+## Database
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The application uses SQLite for local data storage, allowing users to:
+- Cache match information
+- Store user preferences
+- Access data offline
+- Maintain historical match records
 
-## 📧 Contact & Support
+## License
 
-- **Issues**: [GitHub Issues](https://github.com/Slenderman1314/LiveFootball/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Slenderman1314/LiveFootball/discussions)
-- **Email**: support@livefootball.com
+This project is licensed under the MIT License - see the LICENSE file for details.
 
----
+## Contributing
 
-**Last Updated**: December 21, 2025
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Made with ⚽ and ❤️ by the LiveFootball Team
+## Support
+
+For support, please open an issue on the GitHub repository.
