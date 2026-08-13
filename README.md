@@ -90,7 +90,7 @@ Native Android application for **managing a football club/team and following its
 
 ---
  
-##  SQLite database (`AppDatabase`, version 1)
+##  SQLite database (`Database`, version 1)
  
 The `Database` class (`ifp.project.livefootball.Database.Database`) creates and manages the following tables:
  
