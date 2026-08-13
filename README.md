@@ -1,284 +1,429 @@
 # LiveFootball - Android Football App
+ 
+Native Android application for **managing a football club/team and following its matches live**, developed in Java with local SQLite persistence.
+ 
+##  Overview
+ 
+**LiveFootball** is a management tool designed for an amateur/local club. A **Coach** creates teams, players, and matches, while an **Assistant** manages the score, timer, and cards live during the match. All data is stored in a local SQLite database.
+ 
+**Platform:** Native Android
+**Language:** Java
+**Database:** Local SQLite (`SQLiteOpenHelper`)
+**Build system:** Gradle (Android Gradle Plugin 8.4.1, Gradle 8.6)
+**Package / namespace:** `ifp.project.livefootball`
+ 
+---
+ 
+##  Team
+ 
+  - **Carlos Gonzalez** - FrontEnd
+  - **Andrei Raileanu** - Backend & Documentation
+  - **Joan Bono** - BackEnd & Databases
+  - **Antonio Amador** - FrontEnd & Tester
+---
+ 
+##  Features
+ 
+### Access and roles
+ 
+  - **Welcome screen** (`MainActivity`): displays a 3-second splash screen and redirects to the login.
+  - **Login / Registration** (`LogInActivity`, `RegisterActivity`): users and passwords are stored in the SQLite `users` table. During registration, users choose a role: **Coach** or **Assistant**. The logged-in user is stored in `SharedPreferences`.
+  - **Role-based main menu** (`MainMenuActivity`): enables different buttons depending on the user's role:
+  - **Coach**: can *create* matches, teams, and players.
+  - **Assistant**: can *edit* matches, teams, and players, *list* teams and players, and access the match's *live tracking*.
 
-A comprehensive Android application for live football match tracking and team management, built with Java and SQLite local database.
+### Team management (`Team`)
+ 
+  - Create team (`CreateTeamActivity`) — name only.
+  - List teams (`ListTeamActivity`) — long press to delete; a team **cannot be deleted if it has assigned players**.
+  - Edit team (`EditTeamActivity`).
 
-## 📱 Application Overview
+### Player management (`Player`)
+ 
+  - Create player (`CreatePlayerActivity`) — associated with an existing team.
+  - Edit player (`EditPlayerActivity`) — allows reassignment to another team.
+  - List players (`ListPlayersActivity`) — filterable by team using a spinner.
 
-**LiveFootball** is a native Android application that provides real-time football match information, team management, and live updates. The app uses SQLite for local data persistence, enabling offline access to stored match data and team information.
+### Match management (`Match`)
+ 
+  - Create match (`CreateMatchActivity`) — the home and away teams are selected from the registered teams.
+  - Edit match (`EditMatchActivity`).
+  - **Live tracking** (`MatchOnLineActivity`):
+    - Selection of the active match from a spinner.
+    - Timer (`Chronometer`) with start/pause and elapsed-time persistence across screen rotations.
+    - Buttons to increment in real time: home/away goals, home/away yellow cards, and home/away red cards. Each press immediately updates the match row in SQLite.
 
-**Platform:** Android  
-**Language:** Java  
-**Database:** SQLite (Local)  
-**Build System:** Gradle
+### Other
+ 
+  - Logout (returns to the login screen).
+  - `Theme.MaterialComponents.DayNight` theme (supports the system light/dark mode via `values-night`).
+  - Alternative layouts for landscape orientation (`values-land`) and large screens/tablets (`values-w600dp`, `values-w1240dp`).
+  - Partial localization: `values-ca-rES` resource (Catalan), which only translates the app name; the rest of the text is written directly in Spanish in the layouts/code.
+  - Integration of **Firebase Analytics** and **Firebase Crashlytics** (via `google-services.json` and the corresponding Gradle plugins), used automatically by the libraries without additional manual calls in the code.
+---
+ 
+##  Dependencies (`app/build.gradle`)
+ 
+  - `androidx.appcompat:appcompat:1.7.0`
+  - `com.google.android.material:material:1.12.0`
+  - `androidx.constraintlayout:constraintlayout:2.1.4`
+  - `androidx.navigation:navigation-fragment:2.7.7` / `navigation-ui:2.7.7` *(included by the plugin, but not actually used: app navigation is handled with explicit `Intent`s between `Activity`s, not with the Navigation component — see the "Notes" section below)*
+  - `org.testng:testng:7.10.2`
+  - `com.google.firebase:firebase-bom:33.1.0` → `firebase-analytics`, `firebase-crashlytics`
+  - `androidx.test.ext:junit:1.1.5`
+  - `com.google.guava:listenablefuture:1.0`
+  - `androidx.activity:activity:1.9.0`
+
+**Testing:**
+  - `junit:junit:4.13.2`
+  - `androidx.test:runner:1.5.2`
+  - `androidx.test.espresso:espresso-core:3.5.1`
+ 
+### Technical requirements (Android SDK)
+ 
+  - **Min SDK:** 21 (Android 5.0 Lollipop)
+  - **Target SDK:** 33 (Android 13)
+  - **Compile SDK:** 34
+  - **Java:** source/target compatibility 1.8
+  - `viewBinding` enabled in `buildFeatures` (although most `Activity`s still use `findViewById`)
+  - Gradle plugins: `com.android.application`, `com.google.gms.google-services`, `com.google.firebase.crashlytics`
 
 ---
-
-## 👥 Team
-
-The LiveFootball application was developed by:
-
-- **Carlos Gonzalez** - FrontEnd
-- **Andrei Raileanu** - Backend & Documentation
-- **Joan Bono** - BackEnd & Databases
-- **Antonio Amador** - FrontEnd & Tester
-
+ 
+##  SQLite database (`AppDatabase`, version 1)
+ 
+The `Database` class (`ifp.project.livefootball.Database.Database`) creates and manages the following tables:
+ 
+| Table | Main columns |
+|---|---|
+| `teams` | `idTeams` (PK), `name` |
+| `players` | `idPlayer` (PK), `playerName`, `idTeam` (FK → `teams`), `team` |
+| `footballMatch` | `idMatch` (PK), `idLocalTeam` (FK), `idGuestTeam` (FK), `localScore`, `guestScore`, `localTeamName`, `guestTeamName`, `localYellowCards`, `guestYellowCards`, `localRedCards`, `guestRedCards` |
+| `users` | `idUser` (PK), `userName`, `password`, `userType` |
+ 
+The class exposes entity-specific CRUD methods: `insertTeam`, `updateTeamName`, `getTeams`, `deleteTeam`, `insertPlayer`, `updatePlayerTeam`, `getPlayers`, `getPlayersByTeam`, `deletePlayer`, `insertMatch`, `updateMatch`, `getMatches`, `getMatchStatistics`, `deleteMatch`, `insertUser`, `getUser`, `getPass`, `getUserType`, entre otros.
+ 
+> ⚠️ Passwords are stored **in plain text** in the `users` table, without any hashing/encryption. This should be taken into account if the project is deployed to production.
+ 
 ---
-
-## ✨ Features
-
-### Core Features
-
-1. **Live Match Tracking**
-   - Real-time match updates and live scores
-   - Match status monitoring (scheduled, live, finished)
-   - Live commentary and match events
-
-2. **Team Management**
-   - View team information and squad details
-   - Team standings and league positions
-   - Team statistics and performance metrics
-
-3. **Match Information**
-   - Detailed match schedules
-   - Match lineups and formations
-   - Player statistics and performance data
-   - Match history and archives
-
-4. **Local Data Storage**
-   - SQLite database for offline access
-   - Persistent caching of match data
-   - Local team and player information storage
-   - Offline match browsing capabilities
-
-5. **User Experience**
-   - Intuitive user interface
-   - Fast navigation and smooth transitions
-   - Optimized for various Android screen sizes
-   - Dark and light theme support
-
-6. **Notifications**
-   - Match start notifications
-   - Goal alerts during live matches
-   - Score update notifications
-   - Custom notification preferences
-
-7. **Search and Filter**
-   - Search matches by team or date
-   - Filter results by league and season
-   - Quick access to favorite teams
-   - Match history search
-
----
-
-## 📦 Dependencies
-
-### Build Configuration
-
-The application uses the following dependencies and configurations (from `build.gradle`):
-
-#### Android SDK
-- **Min SDK Level:** 21 (Android 5.0 Lollipop)
-- **Target SDK Level:** 33 (Android 13)
-- **Compile SDK Level:** 33
-
-#### Core Libraries
-- **AndroidX Core:** `androidx.appcompat:appcompat:1.x.x`
-- **AndroidX Constraint Layout:** `androidx.constraintlayout:constraintlayout:2.x.x`
-- **Material Design:** `com.google.android.material:material:1.x.x`
-
-#### Database
-- **SQLite:** Built-in Android SQLite Support
-- **Room Persistence Library:** `androidx.room:room-runtime:2.x.x` (optional, for ORM)
-
-#### Networking
-- **Retrofit:** `com.squareup.retrofit2:retrofit:2.x.x` (HTTP client)
-- **OkHttp:** `com.squareup.okhttp3:okhttp:4.x.x` (HTTP interceptor)
-- **Gson:** `com.google.code.gson:gson:2.x.x` (JSON serialization)
-
-#### Image Loading
-- **Glide:** `com.github.bumptech.glide:glide:4.x.x` (Image loading and caching)
-- **Picasso:** `com.squareup.picasso:picasso:2.x.x` (Alternative image library)
-
-#### Utility Libraries
-- **Lombok:** `org.projectlombok:lombok:1.x.x` (Boilerplate reduction)
-- **Apache Commons:** `org.apache.commons:commons-lang3:3.x.x` (Utilities)
-
-#### Reactive Programming
-- **RxJava:** `io.reactivex.rxjava3:rxjava:3.x.x` (Reactive extensions)
-- **RxAndroid:** `io.reactivex.rxjava3:rxandroid:3.x.x` (Android integration)
-
-#### Testing
-- **JUnit:** `junit:junit:4.x.x` (Unit testing)
-- **AndroidX Test:** `androidx.test:runner:1.x.x` (Instrumented testing)
-- **Espresso:** `androidx.test.espresso:espresso-core:3.x.x` (UI testing)
-- **Mockito:** `org.mockito:mockito-core:4.x.x` (Mocking)
-
-#### Logging
-- **Timber:** `com.jakewharton.timber:timber:5.x.x` (Logging)
-- **Crashlytics:** `com.google.firebase:firebase-crashlytics:x.x.x` (Crash reporting)
-
----
-
-## 🗄️ Database Architecture
-
-### SQLite Local Database
-
-The app uses SQLite for local data persistence with the following main tables:
-
-#### Tables
-
-1. **Matches Table**
-   - Match ID, Date, Time
-   - Home Team & Away Team
-   - Final Score, Match Status
-   - League Information
-
-2. **Teams Table**
-   - Team ID, Name, Logo
-   - League Information
-   - Team Statistics
-
-3. **Players Table**
-   - Player ID, Name, Position
-   - Team Assignment
-   - Player Statistics
-
-4. **Leagues Table**
-   - League ID, Name
-   - Season Information
-   - League Rules
-
-5. **User Preferences Table**
-   - Favorite Teams
-   - Notification Settings
-   - Theme Preferences
-
-### Database Operations
-
-- **Create:** Initialize database schema on first app launch
-- **Read:** Retrieve match data, team info, and player statistics offline
-- **Update:** Sync latest match results and standings
-- **Delete:** Clear outdated data and manage storage
-
----
-
-## 🚀 Getting Started
-
+ 
+##  Getting started
+ 
 ### Prerequisites
-
-- Android Studio (Latest version recommended)
-- Android SDK 21 or higher
-- Java 8 or higher
-- Git
+ 
+  - Android Studio (recent version, compatible with AGP 8.4.1 / Gradle 8.6)
+  - Android SDK 21 or higher installed
+  - JDK 8 or higher
+  - Git
+  - A valid Firebase `google-services.json` file for your own project (the one in the repository belongs to the authors' original Firebase project)
 
 ### Installation
+ 
+  1. **Clone the repository:**
+  ```bash
+     git clone https://github.com/Joanbonoprog/LiveFootball.git
+     cd LiveFootball
+  ```
+ 
+  2. **Open in Android Studio:**
+     - Open Android Studio
+     - Select "Open an Existing Project"
+     - Select the `LiveFootball` folder
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Slenderman1314/LiveFootball.git
-   cd LiveFootball
-   ```
+  3. **Sync and build:**
+     - Let Gradle sync the dependencies
+     - Build → Make Project
 
-2. **Open in Android Studio:**
-   - Open Android Studio
-   - Select "Open an Existing Project"
-   - Navigate to the LiveFootball directory
-   - Click "Open"
-
-3. **Build the project:**
-   - Wait for Gradle to sync
-   - Go to Build → Make Project
-   - Resolve any dependency issues
-
-4. **Run the application:**
-   - Connect an Android device or start an emulator
-   - Click Run → Run 'app'
-   - Select your device/emulator
-   - The app will install and launch
+  4. **Run:**
+     - Connect a device or start an emulator (API 21+)
+     - Run → Run 'app'
 
 ---
-
-## 📋 Project Structure
-
+ 
+##  Actual project structure
+ 
 ```
 LiveFootball/
 ├── app/
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── com/slenderman1314/livefootball/
-│   │   │   │       ├── activities/
-│   │   │   │       ├── fragments/
-│   │   │   │       ├── adapters/
-│   │   │   │       ├── database/
-│   │   │   │       ├── models/
-│   │   │   │       ├── services/
-│   │   │   │       └── utils/
-│   │   │   ├── res/
-│   │   │   │   ├── layout/
-│   │   │   │   ├── drawable/
-│   │   │   │   ├── values/
-│   │   │   │   └── menu/
-│   │   │   └── AndroidManifest.xml
-│   │   ├── test/
-│   │   └── androidTest/
+│   ├── google-services.json
+│   ├── proguard-rules.pro
 │   ├── build.gradle
-│   └── proguard-rules.pro
+│   └── src/
+│       ├── main/
+│       │   ├── java/ifp/project/livefootball/
+│       │   │   ├── Account/       # LogInActivity, RegisterActivity, User
+│       │   │   ├── Database/      # Database.java (SQLiteOpenHelper)
+│       │   │   ├── MainMenu/      # MainActivity (splash), MainMenuActivity (dashboard por rol)
+│       │   │   ├── Match/         # CreateMatchActivity, EditMatchActivity,
+│       │   │   │                  # MatchOnLineActivity, MatchStatistics
+│       │   │   ├── Player/        # CreatePlayerActivity, EditPlayerActivity, ListPlayersActivity
+│       │   │   └── Team/          # CreateTeamActivity, EditTeamActivity, ListTeamActivity, Teams
+│       │   ├── res/
+│       │   │   ├── layout/        # One layout per Activity
+│       │   │   ├── values/        # strings, colors, dimensions, themes, arrays
+│       │   │   ├── values-ca-rES/ # Localización parcial (catalán, app_name only)
+│       │   │   ├── values-land/   # Dimensions for landscape orientation
+│       │   │   ├── values-night/  # Tema oscuro
+│       │   │   ├── values-w600dp/ # Dimensions for large screens
+│       │   │   ├── values-w1240dp/# Dimensions for very large screens
+│       │   │   ├── navigation/    # nav_graph.xml (boilerplate not connected to the actual Activities)
+│       │   │   ├── drawable*/     # Logo, background, app icon
+│       │   │   └── mipmap*/       # Launcher icons
+│       │   └── AndroidManifest.xml
+│       ├── test/          # JUnit unit tests (User, CreateTeamActivity, CreatePlayerActivity)
+│       └── androidTest/   # ExampleInstrumentedTest (default Android Studio template)
 ├── gradle/
 ├── build.gradle
 ├── settings.gradle
 └── README.md
 ```
+ 
+---
+ 
+##  Tests
+ 
+The project includes basic unit tests in `app/src/test`:
+ 
+  - `Account/UserTest.java`: validates the getters of the `User` class (name, password, role).
+  - `Team/CreateTeamActivityTest.java` and `Player/CreatePlayerActivityTest.java`: directly instantiate `Activity` classes to check resources (`R.id...`). Since they do not use Robolectric or an instrumented environment, these specific tests are more illustrative than reliable in a real `ActivityUnitTestCase`.
+  In `app/src/androidTest`, there is only `ExampleInstrumentedTest.java`, the default template generated by Android Studio (it does not contain project-specific instrumented tests).
+ 
+---
+ 
+##  Build
+ 
+```bash
+# Debug
+./gradlew assembleDebug# LiveFootball - Android Football App
+ 
+Native Android application for **managing a football club/team and following its matches live**, developed in Java with local SQLite persistence.
+ 
+##  Overview
+ 
+**LiveFootball** is a management tool designed for an amateur/local club. A **Coach** creates teams, players, and matches, while an **Assistant** manages the score, timer, and cards live during the match. All data is stored in a local SQLite database.
+ 
+**Platform:** Native Android
+**Language:** Java
+**Database:** Local SQLite (`SQLiteOpenHelper`)
+**Build system:** Gradle (Android Gradle Plugin 8.4.1, Gradle 8.6)
+**Package / namespace:** `ifp.project.livefootball`
+ 
+---
+ 
+##  Team
+ 
+  - **Carlos Gonzalez** - FrontEnd
+  - **Andrei Raileanu** - Backend & Documentation
+  - **Joan Bono** - BackEnd & Databases
+  - **Antonio Amador** - FrontEnd & Tester
+---
+ 
+##  Features
+ 
+### Access and roles
+ 
+  - **Welcome screen** (`MainActivity`): displays a 3-second splash screen and redirects to the login.
+  - **Login / Registration** (`LogInActivity`, `RegisterActivity`): users and passwords are stored in the SQLite `users` table. During registration, users choose a role: **Coach** or **Assistant**. The logged-in user is stored in `SharedPreferences`.
+  - **Role-based main menu** (`MainMenuActivity`): enables different buttons depending on the user's role:
+  - **Coach**: can *create* matches, teams, and players.
+  - **Assistant**: can *edit* matches, teams, and players, *list* teams and players, and access the match's *live tracking*.
+
+### Team management (`Team`)
+ 
+  - Create team (`CreateTeamActivity`) — name only.
+  - List teams (`ListTeamActivity`) — long press to delete; a team **cannot be deleted if it has assigned players**.
+  - Edit team (`EditTeamActivity`).
+
+### Player management (`Player`)
+ 
+  - Create player (`CreatePlayerActivity`) — associated with an existing team.
+  - Edit player (`EditPlayerActivity`) — allows reassignment to another team.
+  - List players (`ListPlayersActivity`) — filterable by team using a spinner.
+
+### Match management (`Match`)
+ 
+  - Create match (`CreateMatchActivity`) — the home and away teams are selected from the registered teams.
+  - Edit match (`EditMatchActivity`).
+  - **Live tracking** (`MatchOnLineActivity`):
+    - Selection of the active match from a spinner.
+    - Timer (`Chronometer`) with start/pause and elapsed-time persistence across screen rotations.
+    - Buttons to increment in real time: home/away goals, home/away yellow cards, and home/away red cards. Each press immediately updates the match row in SQLite.
+
+### Other
+ 
+  - Logout (returns to the login screen).
+  - `Theme.MaterialComponents.DayNight` theme (supports the system light/dark mode via `values-night`).
+  - Alternative layouts for landscape orientation (`values-land`) and large screens/tablets (`values-w600dp`, `values-w1240dp`).
+  - Partial localization: `values-ca-rES` resource (Catalan), which only translates the app name; the rest of the text is written directly in Spanish in the layouts/code.
+  - Integration of **Firebase Analytics** and **Firebase Crashlytics** (via `google-services.json` and the corresponding Gradle plugins), used automatically by the libraries without additional manual calls in the code.
+---
+ 
+##  Dependencies (`app/build.gradle`)
+ 
+  - `androidx.appcompat:appcompat:1.7.0`
+  - `com.google.android.material:material:1.12.0`
+  - `androidx.constraintlayout:constraintlayout:2.1.4`
+  - `androidx.navigation:navigation-fragment:2.7.7` / `navigation-ui:2.7.7` *(included by the plugin, but not actually used: app navigation is handled with explicit `Intent`s between `Activity`s, not with the Navigation component — see the "Notes" section below)*
+  - `org.testng:testng:7.10.2`
+  - `com.google.firebase:firebase-bom:33.1.0` → `firebase-analytics`, `firebase-crashlytics`
+  - `androidx.test.ext:junit:1.1.5`
+  - `com.google.guava:listenablefuture:1.0`
+  - `androidx.activity:activity:1.9.0`
+
+**Testing:**
+  - `junit:junit:4.13.2`
+  - `androidx.test:runner:1.5.2`
+  - `androidx.test.espresso:espresso-core:3.5.1`
+ 
+### Technical requirements (Android SDK)
+ 
+  - **Min SDK:** 21 (Android 5.0 Lollipop)
+  - **Target SDK:** 33 (Android 13)
+  - **Compile SDK:** 34
+  - **Java:** source/target compatibility 1.8
+  - `viewBinding` enabled in `buildFeatures` (although most `Activity`s still use `findViewById`)
+  - Gradle plugins: `com.android.application`, `com.google.gms.google-services`, `com.google.firebase.crashlytics`
 
 ---
+ 
+##  SQLite database (`Database`, version 1)
+ 
+The `Database` class (`ifp.project.livefootball.Database.Database`) creates and manages the following tables:
+ 
+| Table | Main columns |
+|---|---|
+| `teams` | `idTeams` (PK), `name` |
+| `players` | `idPlayer` (PK), `playerName`, `idTeam` (FK → `teams`), `team` |
+| `footballMatch` | `idMatch` (PK), `idLocalTeam` (FK), `idGuestTeam` (FK), `localScore`, `guestScore`, `localTeamName`, `guestTeamName`, `localYellowCards`, `guestYellowCards`, `localRedCards`, `guestRedCards` |
+| `users` | `idUser` (PK), `userName`, `password`, `userType` |
+ 
+The class exposes entity-specific CRUD methods: `insertTeam`, `updateTeamName`, `getTeams`, `deleteTeam`, `insertPlayer`, `updatePlayerTeam`, `getPlayers`, `getPlayersByTeam`, `deletePlayer`, `insertMatch`, `updateMatch`, `getMatches`, `getMatchStatistics`, `deleteMatch`, `insertUser`, `getUser`, `getPass`, `getUserType`, entre otros.
+ 
+> ⚠️ Passwords are stored **in plain text** in the `users` table, without any hashing/encryption. This should be taken into account if the project is deployed to production.
+ 
+---
+ 
+##  Getting started
+ 
+### Prerequisites
+ 
+  - Android Studio (recent version, compatible with AGP 8.4.1 / Gradle 8.6)
+  - Android SDK 21 or higher installed
+  - JDK 8 or higher
+  - Git
+  - A valid Firebase `google-services.json` file for your own project (the one in the repository belongs to the authors' original Firebase project)
 
-## 🔧 Build & Configuration
+### Installation
+ 
+  1. **Clone the repository:**
+  ```bash
+     git clone https://github.com/Joanbonoprog/LiveFootball.git
+     cd LiveFootball
+  ```
+ 
+  2. **Open in Android Studio:**
+     - Open Android Studio
+     - Select "Open an Existing Project"
+     - Select the `LiveFootball` folder
 
-### Gradle Build File
+  3. **Sync and build:**
+     - Let Gradle sync the dependencies
+     - Build → Make Project
 
-The `build.gradle` file includes:
-- Android plugin configuration
-- SDK versions and compilations
-- All required dependencies
-- ProGuard/R8 configuration for release builds
-- Signing configuration
+  4. **Run:**
+     - Connect a device or start an emulator (API 21+)
+     - Run → Run 'app'
 
-### Building for Release
-
+---
+ 
+##  Actual project structure
+ 
+```
+LiveFootball/
+├── app/
+│   ├── google-services.json
+│   ├── proguard-rules.pro
+│   ├── build.gradle
+│   └── src/
+│       ├── main/
+│       │   ├── java/ifp/project/livefootball/
+│       │   │   ├── Account/       # LogInActivity, RegisterActivity, User
+│       │   │   ├── Database/      # Database.java (SQLiteOpenHelper)
+│       │   │   ├── MainMenu/      # MainActivity (splash), MainMenuActivity (dashboard por rol)
+│       │   │   ├── Match/         # CreateMatchActivity, EditMatchActivity,
+│       │   │   │                  # MatchOnLineActivity, MatchStatistics
+│       │   │   ├── Player/        # CreatePlayerActivity, EditPlayerActivity, ListPlayersActivity
+│       │   │   └── Team/          # CreateTeamActivity, EditTeamActivity, ListTeamActivity, Teams
+│       │   ├── res/
+│       │   │   ├── layout/        # One layout per Activity
+│       │   │   ├── values/        # strings, colors, dimensions, themes, arrays
+│       │   │   ├── values-ca-rES/ # Localización parcial (catalán, app_name only)
+│       │   │   ├── values-land/   # Dimensions for landscape orientation
+│       │   │   ├── values-night/  # Tema oscuro
+│       │   │   ├── values-w600dp/ # Dimensions for large screens
+│       │   │   ├── values-w1240dp/# Dimensions for very large screens
+│       │   │   ├── navigation/    # nav_graph.xml (boilerplate not connected to the actual Activities)
+│       │   │   ├── drawable*/     # Logo, background, app icon
+│       │   │   └── mipmap*/       # Launcher icons
+│       │   └── AndroidManifest.xml
+│       ├── test/          # JUnit unit tests (User, CreateTeamActivity, CreatePlayerActivity)
+│       └── androidTest/   # ExampleInstrumentedTest (default Android Studio template)
+├── gradle/
+├── build.gradle
+├── settings.gradle
+└── README.md
+```
+ 
+---
+ 
+##  Tests
+ 
+The project includes basic unit tests in `app/src/test`:
+ 
+  - `Account/UserTest.java`: validates the getters of the `User` class (name, password, role).
+  - `Team/CreateTeamActivityTest.java` and `Player/CreatePlayerActivityTest.java`: directly instantiate `Activity` classes to check resources (`R.id...`). Since they do not use Robolectric or an instrumented environment, these specific tests are more illustrative than reliable in a real `ActivityUnitTestCase`.
+  In `app/src/androidTest`, there is only `ExampleInstrumentedTest.java`, the default template generated by Android Studio (it does not contain project-specific instrumented tests).
+ 
+---
+ 
+##  Build
+ 
 ```bash
+# Debug
+./gradlew assembleDebug
+ 
+# Release
 ./gradlew assembleRelease
 ```
+ 
+The `build.gradle` file of the `app` module includes ProGuard/R8 configuration for release (`proguardFiles`), although `minifyEnabled` is set to `false` by default.
+ 
+---
+ 
+##  Notes and known limitations
+ 
+  - **"Live" is manual and does not come from a real results API**: the score, cards, and time are entered manually from the assistant's device during the match; the app does not connect to any external football data provider.
+  - **No password encryption**: passwords are stored in plain text in SQLite.
+  - **`nav_graph.xml` and the `First/Second` fragments** are remnants of Android Studio's default template (Navigation Drawer/Bottom Nav) and are not part of the app's actual flow, which navigates using explicit `Intent`s between `Activity`s.
+  - **Language**: the interface is mostly written directly in Spanish in the layouts and code (Toasts, button titles, etc.), with partial Catalan localization limited to the app name.
+  - There is no `LICENSE` file in the repository.
 
-### Building for Debug
-
-```bash
-./gradlew assembleDebug
+---
+ 
+# Release
+./gradlew assembleRelease
 ```
+ 
+The `build.gradle` file of the `app` module includes ProGuard/R8 configuration for release (`proguardFiles`), although `minifyEnabled` is set to `false` by default.
+ 
+---
+ 
+##  Notes and known limitations
+ 
+  - **"Live" is manual and does not come from a real results API**: the score, cards, and time are entered manually from the assistant's device during the match; the app does not connect to any external football data provider.
+  - **No password encryption**: passwords are stored in plain text in SQLite.
+  - **`nav_graph.xml` and the `First/Second` fragments** are remnants of Android Studio's default template (Navigation Drawer/Bottom Nav) and are not part of the app's actual flow, which navigates using explicit `Intent`s between `Activity`s.
+  - **Language**: the interface is mostly written directly in Spanish in the layouts and code (Toasts, button titles, etc.), with partial Catalan localization limited to the app name.
+  - There is no `LICENSE` file in the repository.
 
 ---
-
-## 📝 License
-
-This project is proprietary and confidential. All rights reserved.
-
----
-
-## 📧 Contact & Support
-
-For questions, bug reports, or feature requests, please contact the development team:
-
-- **Carlos**
-- **Andrei**
-- **Joan**
-- **Antonio**
-
----
-
-## 🔄 Version History
-
-- **v1.0.0** - Initial release with core features
-- Further updates to be documented
-
----
-
-**Last Updated:** 2025-12-21
